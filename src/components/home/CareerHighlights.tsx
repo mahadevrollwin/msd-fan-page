@@ -18,7 +18,7 @@ export function CareerHighlights({ highlights }: CareerHighlightsProps) {
           <SectionHeading
             kicker="Career highlights"
             title="A short map of the climb"
-            summary="Milestone markers from the unofficial archive."
+            summary="Four stops. You already have your own list, and it's probably longer."
           />
         </Reveal>
         <Seam className="mt-10 text-gold/40" />

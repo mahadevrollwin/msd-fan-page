@@ -20,8 +20,8 @@ export function FeaturedGallery({ images }: FeaturedGalleryProps) {
           <div className="flex flex-col gap-6 sm:flex-row sm:items-end sm:justify-between">
             <SectionHeading
               kicker="Featured images"
-              title="Frames from the gallery"
-              summary="Still frames featured on the home page from the gallery archive."
+              title="Stills worth pausing on"
+              summary="The light before the first ball, the grass, the stands. Everything around the moment."
             />
             <ButtonLink href="/gallery" variant="ghost" className="shrink-0 self-start sm:self-auto">
               Open gallery

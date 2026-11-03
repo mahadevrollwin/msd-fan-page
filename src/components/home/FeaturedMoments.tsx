@@ -18,7 +18,7 @@ export function FeaturedMoments({ moments }: FeaturedMomentsProps) {
           <SectionHeading
             kicker="Featured moments"
             title="Nights the stands still recite"
-            summary="Career scenes fans return to — edited from the archive desk."
+            summary="Ask anyone where they were. They'll tell you, and then they'll tell you the score."
           />
         </Reveal>
         <div className="mt-14 space-y-16 lg:space-y-24">

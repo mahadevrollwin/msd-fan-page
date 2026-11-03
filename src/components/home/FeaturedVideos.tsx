@@ -21,8 +21,8 @@ export function FeaturedVideos({ videos }: FeaturedVideosProps) {
           <div className="flex flex-col gap-6 sm:flex-row sm:items-end sm:justify-between">
             <SectionHeading
               kicker="Featured video"
-              title="Clips ready for the player"
-              summary="Uploaded files and external URLs both appear here as thumbnails."
+              title="Press play again"
+              summary="You know how they end. That has never stopped anyone."
             />
             <ButtonLink href="/gallery?tab=videos" variant="ghost" className="shrink-0 self-start sm:self-auto">
               Watch videos

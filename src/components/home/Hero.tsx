@@ -30,10 +30,10 @@ export function Hero({ hero }: HeroProps) {
             }
           : {})}
       />
-      <div className="absolute inset-0 bg-gradient-to-r from-pitch via-pitch/85 to-pitch/35" />
-      <div className="absolute inset-0 bg-gradient-to-t from-pitch via-transparent to-pitch/50" />
+      <div className="absolute inset-0 bg-gradient-to-r from-pitch/70 via-pitch/40 to-pitch/10" />
+      <div className="absolute inset-0 bg-gradient-to-t from-pitch/55 via-transparent to-pitch/30" />
 
-      <Container className="relative flex min-h-[100svh] flex-col justify-end pb-16 pt-28 sm:pb-20 lg:pb-24">
+      <Container className="relative flex min-h-[100svh] flex-col justify-center py-28 sm:py-32">
         <motion.div
           initial={reduceMotion ? false : { opacity: 0, y: 24 }}
           animate={{ opacity: 1, y: 0 }}

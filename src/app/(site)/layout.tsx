@@ -6,7 +6,7 @@ export default function SiteLayout({ children }: { children: React.ReactNode }) 
   return (
     <Suspense fallback={<div className="min-h-screen bg-pitch" />}>
       <SiteFrame>{children}</SiteFrame>
-      {/* Live Content API → tag revalidation + soft refresh on CMS publish */}
+      {/* Soft-refresh open tabs when Sanity publishes (data itself is uncached). */}
       <SanityLive />
     </Suspense>
   );

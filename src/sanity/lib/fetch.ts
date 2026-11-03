@@ -1,4 +1,3 @@
-import { cacheTag } from "next/cache";
 import { aboutContent } from "@/data/about";
 import {
   BLOGS_PER_PAGE,
@@ -34,6 +33,7 @@ import {
   type NavItem,
   type SocialLink,
 } from "@/lib/site";
+import { client } from "@/sanity/lib/client";
 import {
   mapBlogCard,
   mapCategory,
@@ -41,7 +41,6 @@ import {
   mapGalleryImage,
   mapGalleryVideo,
 } from "@/sanity/lib/mappers";
-import { sanityFetch as liveSanityFetch } from "@/sanity/lib/live";
 import {
   ABOUT_PAGE_QUERY,
   BLOG_BY_SLUG_QUERY,
@@ -164,30 +163,19 @@ function extractPlainParagraphs(blocks: unknown[] | null | undefined) {
 }
 
 /**
- * Cached Sanity read used by all public content helpers.
+ * Request-time Sanity read used by all public content helpers.
  *
- * Lifetime comes from `cacheLife.default = sanity` in next.config (year-long
- * expire, tag-driven invalidation). Do not call `cacheLife("hours")` here —
- * that blocked CMS updates until the hour window elapsed.
- *
- * Tags match Sanity `_type` values so the webhook at `/api/revalidate` and
- * `<SanityLive />` can bust the right entries immediately on publish.
+ * With Cache Components, data is uncached unless `"use cache"` is set. We
+ * intentionally skip caching here so Studio publishes appear on the next
+ * page load with no webhook wait. `/api/revalidate` remains available for
+ * any residual route-level cache busting.
  */
 async function sanityFetch<T>(
   query: string,
   params: Record<string, unknown> = {},
-  tags: string[] = [],
+  _tags: string[] = [],
 ): Promise<T> {
-  "use cache";
-  for (const tag of tags) cacheTag(tag);
-  cacheTag("sanity");
-  const { data } = await liveSanityFetch({
-    query,
-    params,
-    perspective: "published",
-    stega: false,
-  });
-  return data as T;
+  return client.fetch<T>(query, params);
 }
 
 export async function getSiteSettings(): Promise<SiteSettingsView> {

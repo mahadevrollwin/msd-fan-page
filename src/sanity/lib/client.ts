@@ -5,10 +5,10 @@ assertSanityEnv();
 
 /**
  * Read-only browser-safe client. No write tokens here.
- * Server fetches go through `src/sanity/lib/fetch.ts` with `use cache`.
+ * Public pages fetch through `src/sanity/lib/fetch.ts` at request time
+ * (uncached) so CMS publishes show up on the next load.
  *
- * `useCdn: false` so on-demand revalidation (webhook / Live tag bust) reads
- * fresh Content Lake data instead of a briefly-stale API CDN response.
+ * `useCdn: false` avoids briefly-stale API CDN responses after a publish.
  */
 export const client = createClient({
   projectId,

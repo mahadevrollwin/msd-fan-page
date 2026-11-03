@@ -2,10 +2,12 @@
 
 import { defineConfig } from "sanity";
 import { structureTool } from "sanity/structure";
-import { dataset, projectId } from "@/sanity/env";
+import { assertSanityEnv, dataset, projectId } from "@/sanity/env";
 import { schemaTypes } from "@/sanity/schemaTypes";
 import { singletons } from "@/sanity/singletons";
 import { structure } from "@/sanity/structure";
+
+assertSanityEnv();
 
 const singletonIds = new Set<string>(
   singletons.map((item) => item.documentId),

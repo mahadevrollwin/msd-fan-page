@@ -1,5 +1,7 @@
 import { createClient } from "next-sanity";
-import { apiVersion, dataset, projectId } from "@/sanity/env";
+import { apiVersion, assertSanityEnv, dataset, projectId } from "@/sanity/env";
+
+assertSanityEnv();
 
 /**
  * Read-only browser-safe client. No write tokens here.

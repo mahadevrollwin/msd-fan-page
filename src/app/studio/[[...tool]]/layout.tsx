@@ -1,13 +1,18 @@
 import type { Metadata, Viewport } from "next";
-import { metadata as studioMetadata, viewport as studioViewport } from "next-sanity/studio";
 
 export const metadata: Metadata = {
-  ...studioMetadata,
   title: "MSD Archive Studio",
+  referrer: "same-origin",
+  robots: {
+    index: false,
+    follow: false,
+  },
 };
 
 export const viewport: Viewport = {
-  ...studioViewport,
+  width: "device-width",
+  initialScale: 1,
+  viewportFit: "cover",
   themeColor: "#070708",
 };
 

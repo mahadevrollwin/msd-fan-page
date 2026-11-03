@@ -2,6 +2,8 @@ export type Category = {
   id: string;
   title: string;
   slug: string;
+  /** Published essay count when available from Sanity or local placeholders. */
+  count?: number;
 };
 
 export type BlogBlock =
@@ -26,8 +28,11 @@ export type BlogPost = {
   featuredImage: {
     src: string;
     alt: string;
+    blurDataURL?: string;
   };
   content: BlogBlock[];
+  /** Present when the essay body comes from Sanity Portable Text. */
+  portableText?: unknown[];
   seoTitle: string;
   seoDescription: string;
 };
@@ -42,6 +47,7 @@ export type GalleryImage = {
   image: {
     src: string;
     alt: string;
+    blurDataURL?: string;
   };
 };
 
@@ -54,6 +60,7 @@ export type GalleryVideo = {
   thumbnail: {
     src: string;
     alt: string;
+    blurDataURL?: string;
   };
   videoFile?: string;
   videoUrl?: string;
@@ -73,5 +80,6 @@ export type FeaturedMoment = {
   image: {
     src: string;
     alt: string;
+    blurDataURL?: string;
   };
 };

@@ -5,7 +5,7 @@ assertSanityEnv();
 
 /**
  * Read-only browser-safe client. No write tokens here.
- * Phase 4 will use this for GROQ fetches.
+ * Server fetches go through `src/sanity/lib/fetch.ts` with `use cache`.
  */
 export const client = createClient({
   projectId,

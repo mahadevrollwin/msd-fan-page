@@ -2,7 +2,8 @@ import Link from "next/link";
 import { BookOpen } from "lucide-react";
 import { Container } from "@/components/ui/Container";
 import { Seam } from "@/components/ui/Seam";
-import { legalNav, primaryNav, site, socialLinks } from "@/lib/site";
+import { legalNav, site } from "@/lib/site";
+import type { SiteSettingsView } from "@/sanity/lib/fetch";
 
 function XMark() {
   return (
@@ -35,7 +36,11 @@ function SocialGlyph({ label }: { label: string }) {
   return <BookOpen aria-hidden="true" size={16} />;
 }
 
-export function Footer() {
+type FooterProps = {
+  settings: SiteSettingsView;
+};
+
+export function Footer({ settings }: FooterProps) {
   return (
     <footer className="relative mt-auto overflow-hidden border-t border-gold/20 bg-charcoal">
       <Seam className="text-gold/45" />
@@ -43,18 +48,18 @@ export function Footer() {
         aria-hidden="true"
         className="pointer-events-none absolute -top-8 right-0 font-display text-[9rem] leading-none text-gold/[0.07] sm:text-[14rem] lg:right-8"
       >
-        {site.jersey}
+        {settings.jersey}
       </p>
       <Container className="relative grid gap-12 py-14 sm:py-16 lg:grid-cols-[1.4fr_0.8fr_0.8fr_0.9fr] lg:gap-10">
         <div>
-          <p className="font-display text-5xl tracking-[0.12em] text-cream">{site.name}</p>
-          <p className="mt-2 text-xs uppercase tracking-[0.28em] text-gold">{site.tagline}</p>
-          <p className="mt-5 max-w-sm text-sm leading-6 text-mist">{site.disclaimer}</p>
+          <p className="font-display text-5xl tracking-[0.12em] text-cream">{settings.name}</p>
+          <p className="mt-2 text-xs uppercase tracking-[0.28em] text-gold">{settings.tagline}</p>
+          <p className="mt-5 max-w-sm text-sm leading-6 text-mist">{settings.disclaimer}</p>
         </div>
         <nav aria-label="Footer">
           <p className="text-xs uppercase tracking-[0.24em] text-gold">Explore</p>
           <ul className="mt-4 space-y-2">
-            {primaryNav.map((item) => (
+            {settings.navigation.map((item) => (
               <li key={item.href}>
                 <Link
                   href={item.href}
@@ -84,7 +89,7 @@ export function Footer() {
         <nav aria-label="Public references">
           <p className="text-xs uppercase tracking-[0.24em] text-gold">Elsewhere</p>
           <ul className="mt-4 space-y-2">
-            {socialLinks.map((item) => (
+            {settings.socialLinks.map((item) => (
               <li key={item.label}>
                 <a
                   href={item.href}
@@ -102,8 +107,10 @@ export function Footer() {
         </nav>
       </Container>
       <Container className="relative flex flex-col gap-2 border-t border-white/10 py-5 text-xs text-muted sm:flex-row sm:items-center sm:justify-between">
-        <p>© {site.copyrightYear} {site.name}. Fan-made and unofficial.</p>
-        <p>Jersey {site.jersey} is a fan reference, not an official mark.</p>
+        <p>
+          © {site.copyrightYear} {settings.name}. Fan-made and unofficial.
+        </p>
+        <p>Jersey {settings.jersey} is a fan reference, not an official mark.</p>
       </Container>
     </footer>
   );

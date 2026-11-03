@@ -1,6 +1,6 @@
 /**
- * Layout navigation and fan-page identity.
- * Sanity siteSettings replaces this module in a later phase.
+ * Fallback layout navigation and fan-page identity.
+ * Prefer Sanity `siteSettings` via `getSiteSettings()` when published.
  */
 
 export const site = {

@@ -1,12 +1,19 @@
 import Link from "next/link";
 import { BlogCard } from "@/components/blog/BlogCard";
-import { categories } from "@/data/categories";
-import { listBlogs } from "@/data/blogs";
+import type { BlogPost, Category } from "@/data/types";
 import { cn } from "@/lib/cn";
+import { visiblePageNumbers } from "@/lib/pagination";
 
 type BlogListingProps = {
-  category?: string;
-  page?: number;
+  categories: Category[];
+  listing: {
+    posts: BlogPost[];
+    total: number;
+    totalPages: number;
+    currentPage: number;
+    category: string | null;
+    source: "sanity" | "placeholder";
+  };
 };
 
 function buildHref(next: { category?: string | null; page?: number }) {
@@ -17,12 +24,13 @@ function buildHref(next: { category?: string | null; page?: number }) {
   return query ? `/blogs?${query}` : "/blogs";
 }
 
-export function BlogListing({ category, page = 1 }: BlogListingProps) {
-  const listing = listBlogs({ category, page });
+export function BlogListing({ categories, listing }: BlogListingProps) {
+  const pages = visiblePageNumbers(listing.currentPage, listing.totalPages);
+  const activeCategory = categories.find((item) => item.slug === listing.category);
 
   return (
     <div className="space-y-10">
-      <div className="flex flex-wrap gap-2" role="tablist" aria-label="Blog categories">
+      <div className="flex flex-wrap gap-2" role="list" aria-label="Blog categories">
         <Link
           href={buildHref({ category: null })}
           className={cn(
@@ -34,6 +42,11 @@ export function BlogListing({ category, page = 1 }: BlogListingProps) {
           aria-current={!listing.category ? "page" : undefined}
         >
           All
+          {!listing.category ? (
+            <span className="ml-2 text-[0.65rem] tracking-[0.12em] opacity-80">
+              {listing.total}
+            </span>
+          ) : null}
         </Link>
         {categories.map((item) => {
           const active = listing.category === item.slug;
@@ -42,22 +55,36 @@ export function BlogListing({ category, page = 1 }: BlogListingProps) {
               key={item.id}
               href={buildHref({ category: item.slug })}
               className={cn(
-                "inline-flex min-h-11 items-center border px-4 text-xs uppercase tracking-[0.18em] transition-colors",
+                "inline-flex min-h-11 items-center gap-2 border px-4 text-xs uppercase tracking-[0.18em] transition-colors",
                 active
                   ? "border-gold bg-gold text-pitch"
                   : "border-white/15 text-mist hover:border-gold hover:text-gold",
               )}
               aria-current={active ? "page" : undefined}
             >
-              {item.title}
+              <span>{item.title}</span>
+              {typeof item.count === "number" ? (
+                <span className="text-[0.65rem] tracking-[0.12em] opacity-80">
+                  {item.count}
+                </span>
+              ) : null}
             </Link>
           );
         })}
       </div>
 
+      {activeCategory ? (
+        <p className="text-sm text-muted">
+          Showing {activeCategory.title}
+          {typeof listing.total === "number" ? ` · ${listing.total} essays` : null}
+        </p>
+      ) : null}
+
       {listing.posts.length === 0 ? (
         <p className="border border-dashed border-gold/30 p-8 font-serif text-lg text-mist">
-          No essays in this category yet. Choose another filter or check back after CMS publishing.
+          {listing.category
+            ? "No essays in this category yet. Choose another filter or publish more writing in Studio."
+            : "No essays published yet. Add blogs in Sanity Studio to fill this archive."}
         </p>
       ) : (
         <div className="grid gap-8 md:grid-cols-2 xl:grid-cols-3">
@@ -68,11 +95,14 @@ export function BlogListing({ category, page = 1 }: BlogListingProps) {
       )}
 
       {listing.totalPages > 1 ? (
-        <nav aria-label="Blog pagination" className="flex flex-wrap items-center justify-between gap-4 border-t border-gold/20 pt-8">
+        <nav
+          aria-label="Blog pagination"
+          className="flex flex-col gap-4 border-t border-gold/20 pt-8 sm:flex-row sm:items-center sm:justify-between"
+        >
           <p className="text-sm text-muted">
             Page {listing.currentPage} of {listing.totalPages} · {listing.total} essays
           </p>
-          <div className="flex gap-2">
+          <div className="flex flex-wrap items-center gap-2">
             {listing.currentPage > 1 ? (
               <Link
                 href={buildHref({
@@ -84,6 +114,29 @@ export function BlogListing({ category, page = 1 }: BlogListingProps) {
                 Previous
               </Link>
             ) : null}
+
+            {pages.map((page) => {
+              const active = page === listing.currentPage;
+              return (
+                <Link
+                  key={page}
+                  href={buildHref({
+                    category: listing.category,
+                    page,
+                  })}
+                  aria-current={active ? "page" : undefined}
+                  className={cn(
+                    "inline-flex h-11 min-w-11 items-center justify-center border px-3 text-xs uppercase tracking-[0.18em] transition-colors",
+                    active
+                      ? "border-gold bg-gold text-pitch"
+                      : "border-white/15 text-cream hover:border-gold hover:text-gold",
+                  )}
+                >
+                  {page}
+                </Link>
+              );
+            })}
+
             {listing.currentPage < listing.totalPages ? (
               <Link
                 href={buildHref({

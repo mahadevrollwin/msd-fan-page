@@ -2,9 +2,15 @@ import Image from "next/image";
 import { Reveal } from "@/components/ui/Reveal";
 import { SectionHeading } from "@/components/ui/SectionHeading";
 import { Container } from "@/components/ui/Container";
-import { homeContent } from "@/data/home";
+import type { FeaturedMoment } from "@/data/types";
 
-export function FeaturedMoments() {
+type FeaturedMomentsProps = {
+  moments: FeaturedMoment[];
+};
+
+export function FeaturedMoments({ moments }: FeaturedMomentsProps) {
+  if (moments.length === 0) return null;
+
   return (
     <section className="border-t border-gold/15 py-20 sm:py-28">
       <Container>
@@ -12,11 +18,11 @@ export function FeaturedMoments() {
           <SectionHeading
             kicker="Featured moments"
             title="Nights the stands still recite"
-            summary="Editorial placeholders for the career scenes fans return to. Licensed stills and CMS copy replace these soon."
+            summary="Career scenes fans return to — edited from the archive desk."
           />
         </Reveal>
         <div className="mt-14 space-y-16 lg:space-y-24">
-          {homeContent.moments.map((moment, index) => {
+          {moments.map((moment, index) => {
             const reverse = index % 2 === 1;
             return (
               <Reveal key={moment.id} delay={index * 0.05}>
@@ -32,6 +38,12 @@ export function FeaturedMoments() {
                       fill
                       sizes="(max-width: 1024px) 100vw, 58vw"
                       className="object-cover transition duration-700 hover:scale-[1.03]"
+                      {...(moment.image.blurDataURL
+                        ? {
+                            placeholder: "blur" as const,
+                            blurDataURL: moment.image.blurDataURL,
+                          }
+                        : {})}
                     />
                   </div>
                   <div className="lg:col-span-5">

@@ -1,4 +1,9 @@
-import { media, sampleExternalVideo, sampleVideoFile } from "@/data/media";
+import {
+  media,
+  sampleExternalVideo,
+  sampleVideoFile,
+  sampleYouTubeVideo,
+} from "@/data/media";
 import type { GalleryImage, GalleryVideo } from "@/data/types";
 
 export const galleryImages: GalleryImage[] = [
@@ -134,11 +139,11 @@ export const galleryVideos: GalleryVideo[] = [
   {
     id: "gv6",
     title: "Lights up",
-    description: "Final video tile for a full responsive grid.",
+    description: "YouTube embed example for modal playback testing.",
     category: "Stadium",
     publishedAt: "2026-07-30",
     thumbnail: media.nightBowl,
-    videoUrl: sampleExternalVideo,
+    videoUrl: sampleYouTubeVideo,
   },
 ];
 

@@ -2,9 +2,15 @@ import { Reveal } from "@/components/ui/Reveal";
 import { SectionHeading } from "@/components/ui/SectionHeading";
 import { Container } from "@/components/ui/Container";
 import { Seam } from "@/components/ui/Seam";
-import { homeContent } from "@/data/home";
+import type { CareerHighlight } from "@/data/types";
 
-export function CareerHighlights() {
+type CareerHighlightsProps = {
+  highlights: CareerHighlight[];
+};
+
+export function CareerHighlights({ highlights }: CareerHighlightsProps) {
+  if (highlights.length === 0) return null;
+
   return (
     <section className="border-t border-gold/15 bg-charcoal/50 py-20 sm:py-28">
       <Container>
@@ -12,13 +18,13 @@ export function CareerHighlights() {
           <SectionHeading
             kicker="Career highlights"
             title="A short map of the climb"
-            summary="Milestone placeholders only. Exact wording and dates will be managed from Sanity."
+            summary="Milestone markers from the unofficial archive."
           />
         </Reveal>
         <Seam className="mt-10 text-gold/40" />
         <ol className="mt-10 grid gap-8 sm:grid-cols-2 lg:grid-cols-4">
-          {homeContent.highlights.map((item, index) => (
-            <Reveal key={item.title} delay={index * 0.04}>
+          {highlights.map((item, index) => (
+            <Reveal key={`${item.year}-${item.title}`} delay={index * 0.04}>
               <li className="border-l border-gold/40 pl-5">
                 <p className="font-display text-4xl tracking-[0.08em] text-gold">{item.year}</p>
                 <h3 className="mt-3 text-lg font-medium text-cream">{item.title}</h3>

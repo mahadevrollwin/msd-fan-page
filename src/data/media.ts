@@ -68,3 +68,6 @@ export const sampleVideoFile =
  */
 export const sampleExternalVideo =
   "https://upload.wikimedia.org/wikipedia/commons/transcoded/8/87/Cricket_Bowling_Action.webm/Cricket_Bowling_Action.webm.480p.vp9.webm";
+
+/** Public YouTube sample for embed-player testing in the gallery modal. */
+export const sampleYouTubeVideo = "https://www.youtube.com/watch?v=aqz-KE-bpKQ";

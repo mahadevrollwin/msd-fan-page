@@ -2,11 +2,13 @@ import Image from "next/image";
 import { ButtonLink } from "@/components/ui/ButtonLink";
 import { Reveal } from "@/components/ui/Reveal";
 import { Container } from "@/components/ui/Container";
-import { homeContent } from "@/data/home";
+import type { HomeContentView } from "@/sanity/lib/fetch";
 
-export function AboutPreview() {
-  const { aboutPreview } = homeContent;
+type AboutPreviewProps = {
+  aboutPreview: HomeContentView["aboutPreview"];
+};
 
+export function AboutPreview({ aboutPreview }: AboutPreviewProps) {
   return (
     <section className="border-t border-gold/15 py-20 sm:py-28">
       <Container>

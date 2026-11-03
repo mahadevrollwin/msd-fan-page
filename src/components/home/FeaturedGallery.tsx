@@ -4,9 +4,15 @@ import { ButtonLink } from "@/components/ui/ButtonLink";
 import { Reveal } from "@/components/ui/Reveal";
 import { SectionHeading } from "@/components/ui/SectionHeading";
 import { Container } from "@/components/ui/Container";
-import { homeContent } from "@/data/home";
+import type { GalleryImage } from "@/data/types";
 
-export function FeaturedGallery() {
+type FeaturedGalleryProps = {
+  images: GalleryImage[];
+};
+
+export function FeaturedGallery({ images }: FeaturedGalleryProps) {
+  if (images.length === 0) return null;
+
   return (
     <section className="border-t border-gold/15 py-20 sm:py-28">
       <Container>
@@ -15,7 +21,7 @@ export function FeaturedGallery() {
             <SectionHeading
               kicker="Featured images"
               title="Frames from the gallery"
-              summary="Unsplash atmosphere photos for layout. The gallery lightbox arrives on the Gallery page."
+              summary="Still frames featured on the home page from the gallery archive."
             />
             <ButtonLink href="/gallery" variant="ghost" className="shrink-0 self-start sm:self-auto">
               Open gallery
@@ -23,7 +29,7 @@ export function FeaturedGallery() {
           </div>
         </Reveal>
         <div className="mt-12 grid gap-4 sm:grid-cols-2 lg:grid-cols-4 lg:grid-rows-2">
-          {homeContent.featuredImages.map((image, index) => (
+          {images.map((image, index) => (
             <Reveal
               key={image.id}
               delay={index * 0.04}
@@ -43,6 +49,12 @@ export function FeaturedGallery() {
                       : "(max-width: 1024px) 50vw, 25vw"
                   }
                   className="object-cover transition duration-700 group-hover:scale-[1.04]"
+                  {...(image.image.blurDataURL
+                    ? {
+                        placeholder: "blur" as const,
+                        blurDataURL: image.image.blurDataURL,
+                      }
+                    : {})}
                 />
                 <span className="absolute inset-0 bg-gradient-to-t from-pitch/80 via-transparent to-transparent opacity-90" />
                 <span className="absolute inset-x-0 bottom-0 p-4">

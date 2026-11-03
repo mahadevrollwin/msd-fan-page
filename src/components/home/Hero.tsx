@@ -4,10 +4,13 @@ import Image from "next/image";
 import { motion, useReducedMotion } from "framer-motion";
 import { ButtonLink } from "@/components/ui/ButtonLink";
 import { Container } from "@/components/ui/Container";
-import { homeContent } from "@/data/home";
+import type { HomeContentView } from "@/sanity/lib/fetch";
 
-export function Hero() {
-  const { hero } = homeContent;
+type HeroProps = {
+  hero: HomeContentView["hero"];
+};
+
+export function Hero({ hero }: HeroProps) {
   const reduceMotion = useReducedMotion();
 
   return (
@@ -17,8 +20,15 @@ export function Hero() {
         alt={hero.image.alt}
         fill
         priority
+        fetchPriority="high"
         sizes="100vw"
         className="object-cover object-center"
+        {...(hero.image.blurDataURL
+          ? {
+              placeholder: "blur" as const,
+              blurDataURL: hero.image.blurDataURL,
+            }
+          : {})}
       />
       <div className="absolute inset-0 bg-gradient-to-r from-pitch via-pitch/85 to-pitch/35" />
       <div className="absolute inset-0 bg-gradient-to-t from-pitch via-transparent to-pitch/50" />

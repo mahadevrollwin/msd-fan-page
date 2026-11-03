@@ -17,6 +17,12 @@ export function BlogCard({ post }: BlogCardProps) {
           fill
           sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
           className="object-cover transition duration-700 group-hover:scale-[1.04]"
+          {...(post.featuredImage.blurDataURL
+            ? {
+                placeholder: "blur" as const,
+                blurDataURL: post.featuredImage.blurDataURL,
+              }
+            : {})}
         />
         <span className="absolute inset-0 bg-gradient-to-t from-pitch/70 via-transparent to-transparent" />
       </Link>

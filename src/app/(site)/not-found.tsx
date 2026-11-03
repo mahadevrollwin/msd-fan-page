@@ -5,6 +5,7 @@ import { PageFrame } from "@/components/layout/PageFrame";
 export const metadata: Metadata = {
   title: "Page not found",
   description: "That page is not part of the MSD Archive.",
+  robots: { index: false, follow: false },
 };
 
 export default function NotFound() {

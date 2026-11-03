@@ -1,8 +1,19 @@
-"use client";
+import { Suspense } from "react";
+import { connection } from "next/server";
+import { StudioClient } from "./StudioClient";
 
-import { NextStudio } from "next-sanity/studio";
-import config from "../../../../sanity.config";
+async function StudioDynamicMarker() {
+  await connection();
+  return null;
+}
 
 export default function StudioPage() {
-  return <NextStudio config={config} />;
+  return (
+    <>
+      <StudioClient />
+      <Suspense fallback={null}>
+        <StudioDynamicMarker />
+      </Suspense>
+    </>
+  );
 }

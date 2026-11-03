@@ -1,6 +1,5 @@
 import type { Metadata, Viewport } from "next";
 import { Bebas_Neue, Newsreader, Outfit } from "next/font/google";
-import { SiteFrame } from "@/components/layout/SiteFrame";
 import { site } from "@/lib/site";
 import "./globals.css";
 
@@ -53,9 +52,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
       lang="en"
       className={`${outfit.variable} ${bebas.variable} ${newsreader.variable} h-full antialiased`}
     >
-      <body className="flex min-h-svh flex-col">
-        <SiteFrame>{children}</SiteFrame>
-      </body>
+      <body className="flex min-h-svh flex-col">{children}</body>
     </html>
   );
 }

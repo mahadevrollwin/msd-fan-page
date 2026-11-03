@@ -1,4 +1,4 @@
-import { cacheLife, cacheTag } from "next/cache";
+import { cacheTag } from "next/cache";
 import { aboutContent } from "@/data/about";
 import {
   BLOGS_PER_PAGE,
@@ -34,7 +34,6 @@ import {
   type NavItem,
   type SocialLink,
 } from "@/lib/site";
-import { client } from "@/sanity/lib/client";
 import {
   mapBlogCard,
   mapCategory,
@@ -42,6 +41,7 @@ import {
   mapGalleryImage,
   mapGalleryVideo,
 } from "@/sanity/lib/mappers";
+import { sanityFetch as liveSanityFetch } from "@/sanity/lib/live";
 import {
   ABOUT_PAGE_QUERY,
   BLOG_BY_SLUG_QUERY,
@@ -163,16 +163,31 @@ function extractPlainParagraphs(blocks: unknown[] | null | undefined) {
     .filter((text): text is string => Boolean(text));
 }
 
+/**
+ * Cached Sanity read used by all public content helpers.
+ *
+ * Lifetime comes from `cacheLife.default = sanity` in next.config (year-long
+ * expire, tag-driven invalidation). Do not call `cacheLife("hours")` here —
+ * that blocked CMS updates until the hour window elapsed.
+ *
+ * Tags match Sanity `_type` values so the webhook at `/api/revalidate` and
+ * `<SanityLive />` can bust the right entries immediately on publish.
+ */
 async function sanityFetch<T>(
-  query: Parameters<typeof client.fetch>[0],
+  query: string,
   params: Record<string, unknown> = {},
   tags: string[] = [],
 ): Promise<T> {
   "use cache";
-  cacheLife("hours");
   for (const tag of tags) cacheTag(tag);
   cacheTag("sanity");
-  return client.fetch<T>(query, params);
+  const { data } = await liveSanityFetch({
+    query,
+    params,
+    perspective: "published",
+    stega: false,
+  });
+  return data as T;
 }
 
 export async function getSiteSettings(): Promise<SiteSettingsView> {

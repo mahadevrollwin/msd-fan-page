@@ -1,17 +1,25 @@
 import type { Metadata } from "next";
+import { LegalBody } from "@/components/legal/LegalBody";
 import { PageFrame } from "@/components/layout/PageFrame";
+import { privacyContent } from "@/data/legal";
+import { formatDate } from "@/lib/format";
 
 export const metadata: Metadata = {
-  title: "Privacy Policy",
-  description: "Privacy policy for the unofficial MSD Archive fan page.",
+  title: privacyContent.title,
+  description: privacyContent.summary,
 };
 
 export default function PrivacyPage() {
   return (
     <PageFrame
       kicker="Legal"
-      title="Privacy Policy"
-      summary="The privacy policy will be written in Sanity and rendered here. It is not stored in the page component."
-    />
+      title={privacyContent.title}
+      summary={privacyContent.summary}
+    >
+      <p className="mb-10 text-sm uppercase tracking-[0.18em] text-muted">
+        Updated {formatDate(privacyContent.updatedAt)}
+      </p>
+      <LegalBody blocks={privacyContent.blocks} />
+    </PageFrame>
   );
 }

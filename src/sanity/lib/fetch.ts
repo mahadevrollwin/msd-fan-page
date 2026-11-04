@@ -437,15 +437,20 @@ export async function getAboutContent(): Promise<AboutContentView> {
     ["aboutPage"],
   );
 
-  if (!doc?.hero || typeof doc.hero !== "object") {
+  // Missing hero must not wipe the whole page — Studio often fills sections
+  // first. Only fall back entirely when the about singleton is absent.
+  if (!doc) {
     return { ...aboutContent, source: "placeholder" };
   }
 
-  const hero = doc.hero as {
-    kicker?: string;
-    title?: string;
-    summary?: string;
-  };
+  const hero =
+    doc.hero && typeof doc.hero === "object"
+      ? (doc.hero as {
+          kicker?: string;
+          title?: string;
+          summary?: string;
+        })
+      : {};
   const fanPage = (doc.fanPage ?? {}) as {
     title?: string;
     body?: unknown[];
@@ -465,6 +470,27 @@ export async function getAboutContent(): Promise<AboutContentView> {
   };
 
   const paragraphs = extractPlainParagraphs(fanPage.body);
+  const beats = Array.isArray(journey.beats)
+    ? journey.beats
+        .filter((beat) => beat.title && beat.text)
+        .map((beat) => ({
+          title: beat.title as string,
+          text: beat.text as string,
+        }))
+    : [];
+  const milestones = Array.isArray(doc.milestones)
+    ? (doc.milestones as Array<{
+        year?: string;
+        title?: string;
+        summary?: string;
+      }>)
+        .filter((item) => item.title)
+        .map((item) => ({
+          year: item.year ?? "",
+          title: item.title as string,
+          summary: item.summary ?? "",
+        }))
+    : [];
 
   return {
     source: "sanity",
@@ -479,37 +505,24 @@ export async function getAboutContent(): Promise<AboutContentView> {
         paragraphs.length > 0 ? paragraphs : aboutContent.fanPage.paragraphs,
       portableText: fanPage.body,
       image:
-        resolveImage(fanPage.image ?? null, fanPage.title || "About", 1400) ??
-        aboutContent.fanPage.image,
+        resolveImage(
+          fanPage.image ?? null,
+          fanPage.title || aboutContent.fanPage.title,
+          1400,
+        ) ?? aboutContent.fanPage.image,
     },
     journey: {
       title: journey.title || aboutContent.journey.title,
       summary: journey.summary || aboutContent.journey.summary,
       image:
-        resolveImage(journey.image ?? null, journey.title || "Journey", 1400) ??
-        aboutContent.journey.image,
-      beats: Array.isArray(journey.beats)
-        ? journey.beats
-            .filter((beat) => beat.title && beat.text)
-            .map((beat) => ({
-              title: beat.title as string,
-              text: beat.text as string,
-            }))
-        : aboutContent.journey.beats,
+        resolveImage(
+          journey.image ?? null,
+          journey.title || aboutContent.journey.title,
+          1400,
+        ) ?? aboutContent.journey.image,
+      beats: beats.length > 0 ? beats : aboutContent.journey.beats,
     },
-    milestones: Array.isArray(doc.milestones)
-      ? (doc.milestones as Array<{
-          year?: string;
-          title?: string;
-          summary?: string;
-        }>)
-          .filter((item) => item.title)
-          .map((item) => ({
-            year: item.year ?? "",
-            title: item.title as string,
-            summary: item.summary ?? "",
-          }))
-      : aboutContent.milestones,
+    milestones: milestones.length > 0 ? milestones : aboutContent.milestones,
     legacy: {
       title: legacy.title || aboutContent.legacy.title,
       summary: legacy.summary || aboutContent.legacy.summary,
@@ -518,8 +531,11 @@ export async function getAboutContent(): Promise<AboutContentView> {
           ? legacy.points.filter((point): point is string => Boolean(point))
           : aboutContent.legacy.points,
       image:
-        resolveImage(legacy.image ?? null, legacy.title || "Legacy", 1400) ??
-        aboutContent.legacy.image,
+        resolveImage(
+          legacy.image ?? null,
+          legacy.title || aboutContent.legacy.title,
+          1400,
+        ) ?? aboutContent.legacy.image,
     },
   };
 }

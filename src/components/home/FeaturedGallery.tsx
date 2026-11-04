@@ -5,6 +5,7 @@ import { Reveal } from "@/components/ui/Reveal";
 import { SectionHeading } from "@/components/ui/SectionHeading";
 import { Container } from "@/components/ui/Container";
 import type { GalleryImage } from "@/data/types";
+import { cn } from "@/lib/cn";
 
 type FeaturedGalleryProps = {
   images: GalleryImage[];
@@ -28,25 +29,29 @@ export function FeaturedGallery({ images }: FeaturedGalleryProps) {
             </ButtonLink>
           </div>
         </Reveal>
-        <div className="mt-12 grid gap-4 sm:grid-cols-2 lg:grid-cols-4 lg:grid-rows-2">
+        {/* Explicit aspect ratios — avoid lg:h-full/row-span collapse with fill images */}
+        <div className="mt-12 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
           {images.map((image, index) => (
             <Reveal
               key={image.id}
               delay={index * 0.04}
-              className={index === 0 ? "sm:col-span-2 lg:row-span-2" : ""}
+              className={index === 0 ? "sm:col-span-2" : undefined}
             >
               <Link
                 href="/gallery"
-                className="group relative block aspect-[4/3] overflow-hidden bg-ink lg:aspect-auto lg:h-full"
+                className={cn(
+                  "group relative block w-full overflow-hidden bg-ink",
+                  index === 0 ? "aspect-[16/10]" : "aspect-[4/3]",
+                )}
               >
                 <Image
                   src={image.image.src}
-                  alt={image.altText}
+                  alt={image.altText || image.title}
                   fill
                   sizes={
                     index === 0
-                      ? "(max-width: 1024px) 100vw, 50vw"
-                      : "(max-width: 1024px) 50vw, 25vw"
+                      ? "(max-width: 640px) 100vw, (max-width: 1024px) 100vw, 50vw"
+                      : "(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
                   }
                   className="object-cover transition duration-700 group-hover:scale-[1.04]"
                   {...(image.image.blurDataURL
@@ -61,7 +66,11 @@ export function FeaturedGallery({ images }: FeaturedGalleryProps) {
                   <span className="block font-display text-2xl tracking-[0.05em] text-cream">
                     {image.title}
                   </span>
-                  <span className="mt-1 block text-sm text-mist">{image.description}</span>
+                  {image.description ? (
+                    <span className="mt-1 block text-sm text-mist">
+                      {image.description}
+                    </span>
+                  ) : null}
                 </span>
               </Link>
             </Reveal>

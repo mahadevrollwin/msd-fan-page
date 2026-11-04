@@ -1,7 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef } from "react";
 import type { GalleryVideo } from "@/data/types";
 import { cn } from "@/lib/cn";
 import {
@@ -18,8 +18,9 @@ type VideoThumbnailProps = {
 };
 
 /**
- * Prefers a Studio still; otherwise YouTube poster or a frame pulled from the
- * uploaded / direct file URL so gallery cards never show the generic icon.
+ * Prefers a Studio still; otherwise YouTube poster or a paused frame from the
+ * uploaded file. Sanity file CDN has no CORS ACAO, so we never set
+ * crossOrigin — that would blank the <video> paint entirely.
  */
 export function VideoThumbnail({
   video,
@@ -94,78 +95,45 @@ function VideoFrameThumb({
   className?: string;
 }) {
   const videoRef = useRef<HTMLVideoElement>(null);
-  const [frame, setFrame] = useState<string | null>(null);
 
   useEffect(() => {
     const video = videoRef.current;
     if (!video) return;
 
-    let cancelled = false;
-
-    const capture = () => {
-      if (cancelled || !video.videoWidth) return;
+    const seekToPreview = () => {
       try {
-        const canvas = document.createElement("canvas");
-        canvas.width = video.videoWidth;
-        canvas.height = video.videoHeight;
-        const ctx = canvas.getContext("2d");
-        if (!ctx) return;
-        ctx.drawImage(video, 0, 0);
-        const data = canvas.toDataURL("image/jpeg", 0.82);
-        if (!cancelled) setFrame(data);
+        const target =
+          Number.isFinite(video.duration) && video.duration > 0
+            ? Math.min(1.25, Math.max(0.15, video.duration * 0.12))
+            : 0.4;
+        if (Math.abs(video.currentTime - target) > 0.05) {
+          video.currentTime = target;
+        }
       } catch {
-        // Cross-origin videos may taint the canvas; keep the live <video> frame.
+        // Seeking can fail before enough data is buffered; first frame still paints.
       }
     };
 
-    const seekToFrame = () => {
-      const target = Number.isFinite(video.duration) && video.duration > 0
-        ? Math.min(1, video.duration * 0.08)
-        : 0.25;
-      try {
-        video.currentTime = target;
-      } catch {
-        capture();
-      }
-    };
-
-    const onLoaded = () => seekToFrame();
-    video.addEventListener("loadeddata", onLoaded);
-    video.addEventListener("seeked", capture);
-
-    if (video.readyState >= 2) seekToFrame();
+    video.addEventListener("loadedmetadata", seekToPreview);
+    video.addEventListener("loadeddata", seekToPreview);
+    if (video.readyState >= 1) seekToPreview();
 
     return () => {
-      cancelled = true;
-      video.removeEventListener("loadeddata", onLoaded);
-      video.removeEventListener("seeked", capture);
+      video.removeEventListener("loadedmetadata", seekToPreview);
+      video.removeEventListener("loadeddata", seekToPreview);
     };
   }, [src]);
 
   return (
-    <>
-      <video
-        ref={videoRef}
-        src={src}
-        muted
-        playsInline
-        preload="auto"
-        crossOrigin="anonymous"
-        className={cn(
-          "absolute inset-0 h-full w-full object-cover",
-          frame ? "opacity-0" : "opacity-100",
-          className,
-        )}
-        aria-hidden={Boolean(frame)}
-      />
-      {frame ? (
-        // eslint-disable-next-line @next/next/no-img-element -- data-URL frame from canvas
-        <img
-          src={frame}
-          alt={alt}
-          className={cn("absolute inset-0 h-full w-full object-cover", className)}
-        />
-      ) : null}
-    </>
+    <video
+      ref={videoRef}
+      src={src}
+      muted
+      playsInline
+      preload="auto"
+      // Do not set crossOrigin — cdn.sanity.io/files omits ACAO and blanks paint.
+      className={cn("absolute inset-0 h-full w-full object-cover", className)}
+      aria-label={alt}
+    />
   );
 }

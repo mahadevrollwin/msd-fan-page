@@ -1,5 +1,8 @@
-import Link from "next/link";
+"use client";
+
 import { Play } from "lucide-react";
+import { useCallback, useState } from "react";
+import { VideoPlayerModal } from "@/components/gallery/VideoPlayerModal";
 import { VideoThumbnail } from "@/components/gallery/VideoThumbnail";
 import { ButtonLink } from "@/components/ui/ButtonLink";
 import { Reveal } from "@/components/ui/Reveal";
@@ -12,6 +15,9 @@ type FeaturedVideosProps = {
 };
 
 export function FeaturedVideos({ videos }: FeaturedVideosProps) {
+  const [activeVideo, setActiveVideo] = useState<GalleryVideo | null>(null);
+  const closePlayer = useCallback(() => setActiveVideo(null), []);
+
   if (videos.length === 0) return null;
 
   return (
@@ -32,7 +38,12 @@ export function FeaturedVideos({ videos }: FeaturedVideosProps) {
         <div className="mt-12 grid gap-6 md:grid-cols-3">
           {videos.map((video, index) => (
             <Reveal key={video.id} delay={index * 0.05}>
-              <Link href="/gallery?tab=videos" className="group block">
+              <button
+                type="button"
+                className="group block w-full text-left"
+                onClick={() => setActiveVideo(video)}
+                aria-label={`Play ${video.title}`}
+              >
                 <div className="relative aspect-video overflow-hidden bg-ink">
                   <span className="absolute inset-0 transition duration-700 group-hover:scale-[1.03]">
                     <VideoThumbnail
@@ -50,12 +61,18 @@ export function FeaturedVideos({ videos }: FeaturedVideosProps) {
                 <h3 className="mt-4 font-display text-3xl tracking-[0.04em] text-cream group-hover:text-gold">
                   {video.title}
                 </h3>
-                <p className="mt-2 text-sm leading-6 text-mist">{video.description}</p>
-              </Link>
+                {video.description ? (
+                  <p className="mt-2 text-sm leading-6 text-mist">{video.description}</p>
+                ) : null}
+              </button>
             </Reveal>
           ))}
         </div>
       </Container>
+
+      {activeVideo ? (
+        <VideoPlayerModal video={activeVideo} onClose={closePlayer} />
+      ) : null}
     </section>
   );
 }

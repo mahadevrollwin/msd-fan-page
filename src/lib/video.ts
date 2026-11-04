@@ -1,9 +1,9 @@
 export type VideoPlayback =
   | { kind: "file"; src: string }
-  | { kind: "youtube"; src: string; embedUrl: string }
-  | { kind: "vimeo"; src: string; embedUrl: string };
+  | { kind: "youtube"; src: string; embedUrl: string; id: string }
+  | { kind: "vimeo"; src: string; embedUrl: string; id: string };
 
-function youtubeId(url: string) {
+export function youtubeId(url: string) {
   try {
     const parsed = new URL(url);
     if (parsed.hostname.includes("youtu.be")) {
@@ -53,7 +53,9 @@ export function resolveVideoPlayback(input: {
     return {
       kind: "youtube",
       src: url,
-      embedUrl: `https://www.youtube-nocookie.com/embed/${yt}?autoplay=1&rel=0`,
+      id: yt,
+      // mute=0 so user-initiated modal open keeps audio when the host allows it
+      embedUrl: `https://www.youtube-nocookie.com/embed/${yt}?autoplay=1&mute=0&rel=0`,
     };
   }
 
@@ -62,9 +64,28 @@ export function resolveVideoPlayback(input: {
     return {
       kind: "vimeo",
       src: url,
-      embedUrl: `https://player.vimeo.com/video/${vimeo}?autoplay=1`,
+      id: vimeo,
+      embedUrl: `https://player.vimeo.com/video/${vimeo}?autoplay=1&muted=0`,
     };
   }
 
   return { kind: "file", src: url };
+}
+
+/** True when the CMS did not supply a usable still and we should derive one. */
+export function isFallbackVideoThumbnail(src?: string | null) {
+  if (!src) return true;
+  return src === "/icon.svg" || src.endsWith("/icon.svg");
+}
+
+/** Platform poster URL when no Studio thumbnail is set. */
+export function resolvePlatformPoster(input: {
+  videoFile?: string;
+  videoUrl?: string;
+}): string | null {
+  const playback = resolveVideoPlayback(input);
+  if (playback?.kind === "youtube") {
+    return `https://i.ytimg.com/vi/${playback.id}/hqdefault.jpg`;
+  }
+  return null;
 }

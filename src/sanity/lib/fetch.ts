@@ -51,6 +51,9 @@ import {
   CATEGORIES_QUERY,
   GALLERY_IMAGES_QUERY,
   GALLERY_VIDEOS_QUERY,
+  HOME_LATEST_BLOGS_QUERY,
+  HOME_LATEST_IMAGES_QUERY,
+  HOME_LATEST_VIDEOS_QUERY,
   HOME_PAGE_QUERY,
   LEGAL_PAGE_QUERY,
   RELATED_BLOGS_QUERY,
@@ -247,11 +250,41 @@ export async function getSiteSettings(): Promise<SiteSettingsView> {
 }
 
 export async function getHomeContent(): Promise<HomeContentView> {
-  const doc = await sanityFetch<Record<string, unknown> | null>(
-    HOME_PAGE_QUERY,
-    {},
-    ["homePage", "blog", "galleryImage", "galleryVideo"],
-  );
+  // Home feed sections always pull newest CMS docs so uploads appear without
+  // manually curating featured* refs on the homePage document.
+  const [doc, latestBlogDocs, latestImageDocs, latestVideoDocs] =
+    await Promise.all([
+      sanityFetch<Record<string, unknown> | null>(
+        HOME_PAGE_QUERY,
+        {},
+        ["homePage", "blog", "galleryImage", "galleryVideo"],
+      ),
+      sanityFetch<Array<Parameters<typeof mapBlogCard>[0]>>(
+        HOME_LATEST_BLOGS_QUERY,
+        {},
+        ["blog"],
+      ),
+      sanityFetch<Array<Parameters<typeof mapGalleryImage>[0]>>(
+        HOME_LATEST_IMAGES_QUERY,
+        {},
+        ["galleryImage"],
+      ),
+      sanityFetch<Array<Parameters<typeof mapGalleryVideo>[0]>>(
+        HOME_LATEST_VIDEOS_QUERY,
+        {},
+        ["galleryVideo"],
+      ),
+    ]);
+
+  const featuredBlogs = latestBlogDocs
+    .map((item) => mapBlogCard(item))
+    .filter((item): item is BlogPost => item !== null);
+  const featuredImages = latestImageDocs
+    .map((item) => mapGalleryImage(item))
+    .filter((item): item is GalleryImage => item !== null);
+  const featuredVideos = latestVideoDocs
+    .map((item) => mapGalleryVideo(item))
+    .filter((item): item is GalleryVideo => item !== null);
 
   if (!doc?.hero || typeof doc.hero !== "object") {
     return {
@@ -272,9 +305,16 @@ export async function getHomeContent(): Promise<HomeContentView> {
         image: { ...placeholderHome.aboutPreview.image },
         cta: { ...placeholderHome.aboutPreview.cta },
       },
-      featuredBlogs: placeholderHome.featuredBlogs,
-      featuredImages: placeholderHome.featuredImages,
-      featuredVideos: placeholderHome.featuredVideos,
+      featuredBlogs:
+        featuredBlogs.length > 0 ? featuredBlogs : placeholderHome.featuredBlogs,
+      featuredImages:
+        featuredImages.length > 0
+          ? featuredImages
+          : placeholderHome.featuredImages,
+      featuredVideos:
+        featuredVideos.length > 0
+          ? featuredVideos
+          : placeholderHome.featuredVideos,
     };
   }
 
@@ -320,24 +360,6 @@ export async function getHomeContent(): Promise<HomeContentView> {
           title: item.title as string,
           summary: item.summary ?? "",
         }))
-    : [];
-
-  const featuredBlogs = Array.isArray(doc.featuredBlogs)
-    ? doc.featuredBlogs
-        .map((item) => mapBlogCard(item as Parameters<typeof mapBlogCard>[0]))
-        .filter((item): item is BlogPost => item !== null)
-    : [];
-
-  const featuredImages = Array.isArray(doc.featuredGalleryImages)
-    ? doc.featuredGalleryImages
-        .map((item) => mapGalleryImage(item as Parameters<typeof mapGalleryImage>[0]))
-        .filter((item): item is GalleryImage => item !== null)
-    : [];
-
-  const featuredVideos = Array.isArray(doc.featuredVideos)
-    ? doc.featuredVideos
-        .map((item) => mapGalleryVideo(item as Parameters<typeof mapGalleryVideo>[0]))
-        .filter((item): item is GalleryVideo => item !== null)
     : [];
 
   const aboutPreview = (doc.aboutPreview ?? {}) as {

@@ -243,3 +243,23 @@ export const GALLERY_VIDEOS_QUERY = defineQuery(/* groq */ `
     ${galleryVideoFields}
   }
 `);
+
+/** Latest CMS items for the home page feed sections (always sync to newest). */
+export const HOME_LATEST_BLOGS_QUERY = defineQuery(/* groq */ `
+  *[_type == "blog" && defined(slug.current)]
+    | order(publishedAt desc)[0...3]{
+      ${blogCardFields}
+    }
+`);
+
+export const HOME_LATEST_IMAGES_QUERY = defineQuery(/* groq */ `
+  *[_type == "galleryImage"] | order(publishedAt desc)[0...4]{
+    ${galleryImageFields}
+  }
+`);
+
+export const HOME_LATEST_VIDEOS_QUERY = defineQuery(/* groq */ `
+  *[_type == "galleryVideo"] | order(publishedAt desc)[0...3]{
+    ${galleryVideoFields}
+  }
+`);

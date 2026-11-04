@@ -3,10 +3,15 @@
 import Image from "next/image";
 import { Play, X, ChevronLeft, ChevronRight } from "lucide-react";
 import { useEffect, useId, useMemo, useRef, useState } from "react";
+import { VideoThumbnail } from "@/components/gallery/VideoThumbnail";
 import type { GalleryImage, GalleryVideo } from "@/data/types";
 import { cn } from "@/lib/cn";
 import { formatDate } from "@/lib/format";
-import { resolveVideoPlayback } from "@/lib/video";
+import {
+  isFallbackVideoThumbnail,
+  resolvePlatformPoster,
+  resolveVideoPlayback,
+} from "@/lib/video";
 
 type GalleryExperienceProps = {
   images: GalleryImage[];
@@ -42,6 +47,7 @@ export function GalleryExperience({
   const dialogTitleId = useId();
   const closeRef = useRef<HTMLButtonElement>(null);
   const dialogRef = useRef<HTMLDivElement>(null);
+  const fileVideoRef = useRef<HTMLVideoElement>(null);
 
   if (tabSource !== initialTab) {
     setTabSource(initialTab);
@@ -118,11 +124,42 @@ export function GalleryExperience({
     };
   }, [activeVideo, images.length, lightboxIndex]);
 
+  // User opened the modal via click — play unmuted so audio is not stuck off.
+  useEffect(() => {
+    if (!activeVideo || !playback || playback.kind !== "file") return;
+    const el = fileVideoRef.current;
+    if (!el) return;
+
+    el.defaultMuted = false;
+    el.muted = false;
+    el.volume = 1;
+
+    const start = async () => {
+      try {
+        await el.play();
+      } catch {
+        // Autoplay may still be blocked; leave controls unmuted for a tap.
+        el.muted = false;
+        el.volume = 1;
+      } finally {
+        setVideoLoading(false);
+      }
+    };
+
+    void start();
+  }, [activeVideo, playback]);
+
   function openVideo(video: GalleryVideo) {
     setVideoError(false);
     setVideoLoading(true);
     setActiveVideo(video);
   }
+
+  const modalPoster = activeVideo
+    ? isFallbackVideoThumbnail(activeVideo.thumbnail.src)
+      ? (resolvePlatformPoster(activeVideo) ?? undefined)
+      : activeVideo.thumbnail.src
+    : undefined;
 
   return (
     <div>
@@ -225,12 +262,10 @@ export function GalleryExperience({
                   onClick={() => openVideo(video)}
                 >
                   <span className="relative block aspect-video overflow-hidden bg-ink">
-                    <Image
-                      src={video.thumbnail.src}
-                      alt={video.thumbnail.alt}
-                      fill
+                    <VideoThumbnail
+                      video={video}
                       sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
-                      className="object-cover transition duration-700 group-hover:scale-[1.04]"
+                      className="transition duration-700 group-hover:scale-[1.04]"
                     />
                     <span className="absolute inset-0 grid place-items-center bg-pitch/35 transition group-hover:bg-pitch/15">
                       <span className="grid h-14 w-14 place-items-center border border-gold bg-pitch/70 text-gold transition group-hover:bg-gold group-hover:text-pitch">
@@ -405,13 +440,20 @@ export function GalleryExperience({
               ) : (
                 <video
                   key={activeVideo.id}
+                  ref={fileVideoRef}
                   className="h-full w-full"
                   controls
-                  autoPlay
                   playsInline
-                  preload="metadata"
-                  poster={activeVideo.thumbnail.src}
-                  onLoadedData={() => setVideoLoading(false)}
+                  preload="auto"
+                  muted={false}
+                  poster={modalPoster}
+                  onLoadedData={(event) => {
+                    const el = event.currentTarget;
+                    el.muted = false;
+                    el.defaultMuted = false;
+                    el.volume = 1;
+                    setVideoLoading(false);
+                  }}
                   onError={() => {
                     setVideoLoading(false);
                     setVideoError(true);

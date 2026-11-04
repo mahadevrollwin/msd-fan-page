@@ -1,6 +1,6 @@
-import Image from "next/image";
 import Link from "next/link";
 import { Play } from "lucide-react";
+import { VideoThumbnail } from "@/components/gallery/VideoThumbnail";
 import { ButtonLink } from "@/components/ui/ButtonLink";
 import { Reveal } from "@/components/ui/Reveal";
 import { SectionHeading } from "@/components/ui/SectionHeading";
@@ -34,18 +34,10 @@ export function FeaturedVideos({ videos }: FeaturedVideosProps) {
             <Reveal key={video.id} delay={index * 0.05}>
               <Link href="/gallery?tab=videos" className="group block">
                 <div className="relative aspect-video overflow-hidden bg-ink">
-                  <Image
-                    src={video.thumbnail.src}
-                    alt={video.thumbnail.alt}
-                    fill
+                  <VideoThumbnail
+                    video={video}
                     sizes="(max-width: 768px) 100vw, 33vw"
-                    className="object-cover transition duration-700 group-hover:scale-[1.04]"
-                    {...(video.thumbnail.blurDataURL
-                      ? {
-                          placeholder: "blur" as const,
-                          blurDataURL: video.thumbnail.blurDataURL,
-                        }
-                      : {})}
+                    className="transition duration-700 group-hover:scale-[1.04]"
                   />
                   <span className="absolute inset-0 bg-pitch/35 transition group-hover:bg-pitch/20" />
                   <span className="absolute inset-0 grid place-items-center">

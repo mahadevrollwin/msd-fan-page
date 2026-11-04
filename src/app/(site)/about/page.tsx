@@ -66,7 +66,7 @@ export default async function AboutPage() {
 
         <Reveal>
           <section aria-labelledby="about-journey-heading">
-            <div className="grid items-end gap-8 lg:grid-cols-[1.1fr_0.9fr]">
+            <div className="grid items-center gap-8 lg:grid-cols-[1.1fr_0.9fr]">
               <div>
                 <h2
                   id="about-journey-heading"

@@ -252,8 +252,15 @@ export const HOME_LATEST_BLOGS_QUERY = defineQuery(/* groq */ `
     }
 `);
 
+/** Prefer the curated “MSD The IPL GOD” still; fall back to newest gallery image. */
 export const HOME_LATEST_IMAGES_QUERY = defineQuery(/* groq */ `
-  *[_type == "galleryImage"] | order(publishedAt desc)[0...1]{
+  *[
+    _type == "galleryImage" &&
+    _id == coalesce(
+      *[_type == "galleryImage" && title == "MSD The IPL GOD"][0]._id,
+      *[_type == "galleryImage"] | order(publishedAt desc)[0]._id
+    )
+  ][0...1]{
     ${galleryImageFields}
   }
 `);

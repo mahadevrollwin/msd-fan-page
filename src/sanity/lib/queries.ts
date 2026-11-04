@@ -253,7 +253,7 @@ export const HOME_LATEST_BLOGS_QUERY = defineQuery(/* groq */ `
 `);
 
 export const HOME_LATEST_IMAGES_QUERY = defineQuery(/* groq */ `
-  *[_type == "galleryImage"] | order(publishedAt desc)[0...4]{
+  *[_type == "galleryImage"] | order(publishedAt desc)[0...1]{
     ${galleryImageFields}
   }
 `);

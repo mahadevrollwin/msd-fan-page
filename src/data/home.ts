@@ -71,6 +71,6 @@ export const homeContent = {
     cta: { label: "Read the about page", href: "/about" as const },
   },
   featuredBlogs: blogs.slice(0, 3),
-  featuredImages: galleryImages.slice(0, 4),
+  featuredImages: galleryImages.slice(0, 1),
   featuredVideos: galleryVideos.slice(0, 3),
 };

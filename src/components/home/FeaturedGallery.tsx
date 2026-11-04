@@ -5,14 +5,14 @@ import { Reveal } from "@/components/ui/Reveal";
 import { SectionHeading } from "@/components/ui/SectionHeading";
 import { Container } from "@/components/ui/Container";
 import type { GalleryImage } from "@/data/types";
-import { cn } from "@/lib/cn";
 
 type FeaturedGalleryProps = {
   images: GalleryImage[];
 };
 
 export function FeaturedGallery({ images }: FeaturedGalleryProps) {
-  if (images.length === 0) return null;
+  const image = images[0];
+  if (!image) return null;
 
   return (
     <section className="border-t border-gold/15 py-20 sm:py-28">
@@ -20,7 +20,7 @@ export function FeaturedGallery({ images }: FeaturedGalleryProps) {
         <Reveal>
           <div className="flex flex-col gap-6 sm:flex-row sm:items-end sm:justify-between">
             <SectionHeading
-              kicker="Featured images"
+              kicker="Featured image"
               title="Stills worth pausing on"
               summary="The light before the first ball, the grass, the stands. Everything around the moment."
             />
@@ -29,53 +29,48 @@ export function FeaturedGallery({ images }: FeaturedGalleryProps) {
             </ButtonLink>
           </div>
         </Reveal>
-        {/* Explicit aspect ratios — avoid lg:h-full/row-span collapse with fill images */}
-        <div className="mt-12 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
-          {images.map((image, index) => (
-            <Reveal
-              key={image.id}
-              delay={index * 0.04}
-              className={index === 0 ? "sm:col-span-2" : undefined}
-            >
-              <Link
-                href="/gallery"
-                className={cn(
-                  "group relative block w-full overflow-hidden bg-ink",
-                  index === 0 ? "aspect-[16/10]" : "aspect-[4/3]",
-                )}
-              >
-                <Image
-                  src={image.image.src}
-                  alt={image.altText || image.title}
-                  fill
-                  sizes={
-                    index === 0
-                      ? "(max-width: 640px) 100vw, (max-width: 1024px) 100vw, 50vw"
-                      : "(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
+
+        <Reveal delay={0.06} className="mt-12">
+          <Link
+            href="/gallery"
+            className="group relative block aspect-[16/10] w-full overflow-hidden bg-ink sm:aspect-[21/9]"
+          >
+            <Image
+              src={image.image.src}
+              alt={image.altText || image.title}
+              fill
+              sizes="100vw"
+              className="object-cover object-center transition duration-700 group-hover:scale-[1.03]"
+              {...(image.image.blurDataURL
+                ? {
+                    placeholder: "blur" as const,
+                    blurDataURL: image.image.blurDataURL,
                   }
-                  className="object-cover transition duration-700 group-hover:scale-[1.04]"
-                  {...(image.image.blurDataURL
-                    ? {
-                        placeholder: "blur" as const,
-                        blurDataURL: image.image.blurDataURL,
-                      }
-                    : {})}
-                />
-                <span className="absolute inset-0 bg-gradient-to-t from-pitch/80 via-transparent to-transparent opacity-90" />
-                <span className="absolute inset-x-0 bottom-0 p-4">
-                  <span className="block font-display text-2xl tracking-[0.05em] text-cream">
-                    {image.title}
+                : {})}
+            />
+            <span className="absolute inset-0 bg-gradient-to-t from-pitch via-pitch/25 to-transparent" />
+            <span className="absolute inset-x-0 bottom-0 flex flex-col gap-2 p-6 sm:flex-row sm:items-end sm:justify-between sm:p-8 lg:p-10">
+              <span>
+                {image.category ? (
+                  <span className="block text-[0.7rem] uppercase tracking-[0.2em] text-gold">
+                    {image.category}
                   </span>
-                  {image.description ? (
-                    <span className="mt-1 block text-sm text-mist">
-                      {image.description}
-                    </span>
-                  ) : null}
+                ) : null}
+                <span className="mt-2 block font-display text-4xl tracking-[0.04em] text-cream sm:text-5xl lg:text-6xl">
+                  {image.title}
                 </span>
-              </Link>
-            </Reveal>
-          ))}
-        </div>
+                {image.description ? (
+                  <span className="mt-3 block max-w-xl font-serif text-base leading-relaxed text-cream/85 italic sm:text-lg">
+                    {image.description}
+                  </span>
+                ) : null}
+              </span>
+              <span className="mt-4 inline-flex min-h-11 items-center border border-gold/60 bg-pitch/40 px-5 text-xs uppercase tracking-[0.2em] text-gold transition group-hover:border-gold group-hover:bg-gold group-hover:text-pitch sm:mt-0">
+                View gallery
+              </span>
+            </span>
+          </Link>
+        </Reveal>
       </Container>
     </section>
   );

@@ -2,6 +2,7 @@
 
 import Image from "next/image";
 import { Play, X, ChevronLeft, ChevronRight } from "lucide-react";
+import { useRouter } from "next/navigation";
 import { useEffect, useId, useMemo, useRef, useState } from "react";
 import { VideoThumbnail } from "@/components/gallery/VideoThumbnail";
 import type { GalleryImage, GalleryVideo } from "@/data/types";
@@ -21,19 +22,17 @@ type GalleryExperienceProps = {
 
 type GalleryTab = "images" | "videos";
 
-function syncTabToUrl(tab: GalleryTab) {
-  if (typeof window === "undefined") return;
-  const url = new URL(window.location.href);
-  if (tab === "videos") url.searchParams.set("tab", "videos");
-  else url.searchParams.delete("tab");
-  window.history.replaceState(null, "", `${url.pathname}${url.search}${url.hash}`);
-}
+const TAB_PATH: Record<GalleryTab, string> = {
+  images: "/gallery",
+  videos: "/gallery/videos",
+};
 
 export function GalleryExperience({
   images,
   videos,
   initialTab = "images",
 }: GalleryExperienceProps) {
+  const router = useRouter();
   const [tab, setTab] = useState<GalleryTab>(initialTab);
   const [tabSource, setTabSource] = useState(initialTab);
   const [lightboxIndex, setLightboxIndex] = useState<number | null>(null);
@@ -63,9 +62,9 @@ export function GalleryExperience({
 
   function selectTab(next: GalleryTab) {
     setTab(next);
-    syncTabToUrl(next);
     setLightboxIndex(null);
     setActiveVideo(null);
+    router.replace(TAB_PATH[next], { scroll: false });
   }
 
   useEffect(() => {

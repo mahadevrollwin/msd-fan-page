@@ -10,10 +10,10 @@ type WebhookPayload = {
 
 const TYPE_PATHS: Record<string, string[]> = {
   homePage: ["/"],
-  siteSettings: ["/", "/blogs", "/gallery", "/about"],
+  siteSettings: ["/", "/blogs", "/gallery", "/gallery/videos", "/about"],
   aboutPage: ["/about"],
   galleryImage: ["/gallery", "/"],
-  galleryVideo: ["/gallery", "/"],
+  galleryVideo: ["/gallery/videos", "/gallery", "/"],
   category: ["/blogs"],
   blog: ["/blogs", "/"],
   legalPage: ["/terms-and-conditions", "/privacy-policy"],

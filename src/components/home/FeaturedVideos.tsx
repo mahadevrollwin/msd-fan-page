@@ -30,7 +30,7 @@ export function FeaturedVideos({ videos }: FeaturedVideosProps) {
               title="Press play again"
               summary="You know how they end. That has never stopped anyone."
             />
-            <ButtonLink href="/gallery?tab=videos" variant="ghost" className="shrink-0 self-start sm:self-auto">
+            <ButtonLink href="/gallery/videos" variant="ghost" className="shrink-0 self-start sm:self-auto">
               Watch videos
             </ButtonLink>
           </div>

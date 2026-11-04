@@ -21,6 +21,9 @@ type VideoThumbnailProps = {
  * Prefers a Studio still; otherwise YouTube poster or a paused frame from the
  * uploaded file. Sanity file CDN has no CORS ACAO, so we never set
  * crossOrigin — that would blank the <video> paint entirely.
+ *
+ * Many CMS uploads are letterboxed inside a 16:9 file. We cover the card and
+ * gently zoom so black bars disappear without a harsh center crop.
  */
 export function VideoThumbnail({
   video,
@@ -40,7 +43,7 @@ export function VideoThumbnail({
         fill
         sizes={sizes}
         priority={priority}
-        className={cn("object-cover", className)}
+        className={cn("object-cover object-center", className)}
         {...(video.thumbnail.blurDataURL
           ? {
               placeholder: "blur" as const,
@@ -59,7 +62,7 @@ export function VideoThumbnail({
         fill
         sizes={sizes}
         priority={priority}
-        className={cn("object-cover", className)}
+        className={cn("object-cover object-center", className)}
       />
     );
   }
@@ -80,7 +83,7 @@ export function VideoThumbnail({
       alt={video.thumbnail.alt}
       fill
       sizes={sizes}
-      className={cn("object-cover", className)}
+      className={cn("object-cover object-center", className)}
     />
   );
 }
@@ -104,8 +107,8 @@ function VideoFrameThumb({
       try {
         const target =
           Number.isFinite(video.duration) && video.duration > 0
-            ? Math.min(1.25, Math.max(0.15, video.duration * 0.12))
-            : 0.4;
+            ? Math.min(1.4, Math.max(0.2, video.duration * 0.15))
+            : 0.5;
         if (Math.abs(video.currentTime - target) > 0.05) {
           video.currentTime = target;
         }
@@ -125,15 +128,22 @@ function VideoFrameThumb({
   }, [src]);
 
   return (
-    <video
-      ref={videoRef}
-      src={src}
-      muted
-      playsInline
-      preload="auto"
-      // Do not set crossOrigin — cdn.sanity.io/files omits ACAO and blanks paint.
-      className={cn("absolute inset-0 h-full w-full object-cover", className)}
-      aria-label={alt}
-    />
+    <span className="absolute inset-0 overflow-hidden bg-ink">
+      <video
+        ref={videoRef}
+        src={src}
+        muted
+        playsInline
+        preload="auto"
+        // Do not set crossOrigin — cdn.sanity.io/files omits ACAO and blanks paint.
+        // Cover + slight zoom crops encoded letterbox/pillarbox bars to fill the card.
+        className={cn(
+          "absolute left-1/2 top-1/2 h-full w-full max-w-none -translate-x-1/2 -translate-y-1/2 object-cover object-center",
+          "scale-[1.34]",
+          className,
+        )}
+        aria-label={alt}
+      />
+    </span>
   );
 }

@@ -34,12 +34,13 @@ export function FeaturedVideos({ videos }: FeaturedVideosProps) {
             <Reveal key={video.id} delay={index * 0.05}>
               <Link href="/gallery?tab=videos" className="group block">
                 <div className="relative aspect-video overflow-hidden bg-ink">
-                  <VideoThumbnail
-                    video={video}
-                    sizes="(max-width: 768px) 100vw, 33vw"
-                    className="transition duration-700 group-hover:scale-[1.04]"
-                  />
-                  <span className="absolute inset-0 bg-pitch/35 transition group-hover:bg-pitch/20" />
+                  <span className="absolute inset-0 transition duration-700 group-hover:scale-[1.03]">
+                    <VideoThumbnail
+                      video={video}
+                      sizes="(max-width: 768px) 100vw, 33vw"
+                    />
+                  </span>
+                  <span className="absolute inset-0 bg-pitch/30 transition group-hover:bg-pitch/15" />
                   <span className="absolute inset-0 grid place-items-center">
                     <span className="grid h-14 w-14 place-items-center border border-gold bg-pitch/70 text-gold transition group-hover:bg-gold group-hover:text-pitch">
                       <Play aria-hidden="true" size={22} fill="currentColor" />

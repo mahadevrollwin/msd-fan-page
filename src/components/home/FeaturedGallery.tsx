@@ -33,14 +33,17 @@ export function FeaturedGallery({ images }: FeaturedGalleryProps) {
         <Reveal delay={0.06} className="mt-12">
           <Link
             href="/gallery"
-            className="group relative block aspect-[16/10] w-full overflow-hidden bg-ink sm:aspect-[21/9]"
+            className="group relative block w-full overflow-hidden bg-ink"
           >
+            {/* Intrinsic height — object-contain so the full still shows, no crop */}
             <Image
               src={image.image.src}
               alt={image.altText || image.title}
-              fill
+              width={1920}
+              height={1080}
               sizes="100vw"
-              className="object-cover object-center transition duration-700 group-hover:scale-[1.03]"
+              className="h-auto w-full object-contain transition duration-700 group-hover:opacity-95"
+              style={{ width: "100%", height: "auto" }}
               {...(image.image.blurDataURL
                 ? {
                     placeholder: "blur" as const,
@@ -48,7 +51,7 @@ export function FeaturedGallery({ images }: FeaturedGalleryProps) {
                   }
                 : {})}
             />
-            <span className="absolute inset-0 bg-gradient-to-t from-pitch via-pitch/25 to-transparent" />
+            <span className="pointer-events-none absolute inset-0 bg-gradient-to-t from-pitch/90 via-pitch/20 to-transparent" />
             <span className="absolute inset-x-0 bottom-0 flex flex-col gap-2 p-6 sm:flex-row sm:items-end sm:justify-between sm:p-8 lg:p-10">
               <span>
                 {image.category ? (

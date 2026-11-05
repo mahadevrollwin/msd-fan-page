@@ -13,7 +13,7 @@ export function FeaturedMoments({ moments }: FeaturedMomentsProps) {
   if (moments.length === 0) return null;
 
   return (
-    <AtmosphereSection silhouette="right" tone="wash" strength={0.2}>
+    <AtmosphereSection silhouette="right" figure="stump" tone="wash" strength={0.3} mirror={false}>
       <Container>
         <Reveal variant="blurUp">
           <SectionHeading

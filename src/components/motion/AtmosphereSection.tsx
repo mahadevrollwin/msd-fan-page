@@ -1,23 +1,30 @@
-import { ParallaxSilhouette } from "@/components/motion/ParallaxSilhouette";
+import {
+  ParallaxSilhouette,
+  type DhoniFigure,
+} from "@/components/motion/ParallaxSilhouette";
 import { cn } from "@/lib/cn";
 
 type AtmosphereSectionProps = {
   children: React.ReactNode;
   className?: string;
   silhouette?: "left" | "right" | "none";
+  figure?: DhoniFigure;
   tone?: "default" | "deep" | "wash";
   strength?: number;
+  mirror?: boolean;
 };
 
 /**
- * Premium section shell: soft gold wash + optional parallax silhouette.
+ * Premium section shell: soft gold wash + optional parallax figure.
  */
 export function AtmosphereSection({
   children,
   className,
   silhouette = "none",
+  figure = "stump",
   tone = "default",
-  strength = 0.18,
+  strength = 0.26,
+  mirror,
 }: AtmosphereSectionProps) {
   return (
     <section
@@ -30,7 +37,12 @@ export function AtmosphereSection({
       )}
     >
       {silhouette !== "none" ? (
-        <ParallaxSilhouette side={silhouette} strength={strength} />
+        <ParallaxSilhouette
+          side={silhouette}
+          figure={figure}
+          strength={strength}
+          mirror={mirror}
+        />
       ) : null}
       <div
         aria-hidden

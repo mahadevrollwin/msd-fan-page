@@ -36,6 +36,7 @@ export function GalleryPageView({
       title={title}
       summary={summary}
       silhouette="right"
+      figure="stride"
     >
       <Suspense
         fallback={

@@ -16,7 +16,7 @@ export function FeaturedGallery({ images }: FeaturedGalleryProps) {
   if (!image) return null;
 
   return (
-    <AtmosphereSection silhouette="right" tone="wash" strength={0.18}>
+    <AtmosphereSection silhouette="right" figure="walk" tone="wash" strength={0.28} mirror={false}>
       <Container>
         <Reveal variant="blurUp">
           <div className="flex flex-col gap-6 sm:flex-row sm:items-end sm:justify-between">

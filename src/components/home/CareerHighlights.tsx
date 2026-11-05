@@ -13,7 +13,7 @@ export function CareerHighlights({ highlights }: CareerHighlightsProps) {
   if (highlights.length === 0) return null;
 
   return (
-    <AtmosphereSection silhouette="left" tone="deep" strength={0.16}>
+    <AtmosphereSection silhouette="left" figure="celebrate" tone="deep" strength={0.26} mirror={false}>
       <Container>
         <Reveal variant="blurUp">
           <SectionHeading

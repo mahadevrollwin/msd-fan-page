@@ -1,4 +1,7 @@
-import { ParallaxSilhouette } from "@/components/motion/ParallaxSilhouette";
+import {
+  ParallaxSilhouette,
+  type DhoniFigure,
+} from "@/components/motion/ParallaxSilhouette";
 import { Reveal } from "@/components/ui/Reveal";
 import { Container } from "@/components/ui/Container";
 import { cn } from "@/lib/cn";
@@ -9,6 +12,7 @@ type PageFrameProps = {
   summary: string;
   children?: React.ReactNode;
   silhouette?: "left" | "right" | "none";
+  figure?: DhoniFigure;
   className?: string;
 };
 
@@ -18,12 +22,19 @@ export function PageFrame({
   summary,
   children,
   silhouette = "none",
+  figure = "stride",
   className,
 }: PageFrameProps) {
   return (
     <main id="main" className={cn("relative flex flex-1 flex-col overflow-hidden", className)}>
       {silhouette !== "none" ? (
-        <ParallaxSilhouette side={silhouette} strength={0.16} className="top-0 h-[70vh]" />
+        <ParallaxSilhouette
+          side={silhouette}
+          figure={figure}
+          strength={0.24}
+          mirror={false}
+          className="top-0 h-[70vh]"
+        />
       ) : null}
       <div
         aria-hidden

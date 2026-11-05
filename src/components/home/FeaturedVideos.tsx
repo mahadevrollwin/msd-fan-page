@@ -22,7 +22,7 @@ export function FeaturedVideos({ videos }: FeaturedVideosProps) {
   if (videos.length === 0) return null;
 
   return (
-    <AtmosphereSection silhouette="left" tone="deep" strength={0.15}>
+    <AtmosphereSection silhouette="left" figure="jog" tone="deep" strength={0.26} mirror={false}>
       <Container>
         <Reveal variant="blurUp">
           <div className="flex flex-col gap-6 sm:flex-row sm:items-end sm:justify-between">

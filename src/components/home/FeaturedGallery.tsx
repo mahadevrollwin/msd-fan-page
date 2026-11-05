@@ -1,5 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
+import { AtmosphereSection } from "@/components/motion/AtmosphereSection";
 import { ButtonLink } from "@/components/ui/ButtonLink";
 import { Reveal } from "@/components/ui/Reveal";
 import { SectionHeading } from "@/components/ui/SectionHeading";
@@ -15,9 +16,9 @@ export function FeaturedGallery({ images }: FeaturedGalleryProps) {
   if (!image) return null;
 
   return (
-    <section className="border-t border-gold/15 py-20 sm:py-28">
+    <AtmosphereSection silhouette="right" tone="wash" strength={0.18}>
       <Container>
-        <Reveal>
+        <Reveal variant="blurUp">
           <div className="flex flex-col gap-6 sm:flex-row sm:items-end sm:justify-between">
             <SectionHeading
               kicker="Featured image"
@@ -30,19 +31,23 @@ export function FeaturedGallery({ images }: FeaturedGalleryProps) {
           </div>
         </Reveal>
 
-        <Reveal delay={0.06} className="mt-12">
+        <Reveal delay={0.1} variant="scaleIn" className="mt-14">
           <div className="mx-auto w-full max-w-2xl sm:max-w-3xl">
             <Link
               href="/gallery"
               className="group relative block w-full overflow-hidden bg-ink"
             >
+              <div
+                aria-hidden
+                className="pointer-events-none absolute inset-0 z-20 border border-gold/25 transition group-hover:border-gold/50"
+              />
               <Image
                 src={image.image.src}
                 alt={image.altText || image.title}
                 width={1200}
                 height={750}
                 sizes="(max-width: 768px) 100vw, 48rem"
-                className="h-auto w-full object-contain transition duration-700 group-hover:opacity-95"
+                className="h-auto w-full object-contain transition duration-700 group-hover:scale-[1.02] group-hover:opacity-95"
                 style={{ width: "100%", height: "auto" }}
                 {...(image.image.blurDataURL
                   ? {
@@ -51,8 +56,8 @@ export function FeaturedGallery({ images }: FeaturedGalleryProps) {
                     }
                   : {})}
               />
-              <span className="pointer-events-none absolute inset-0 bg-gradient-to-t from-pitch/90 via-pitch/20 to-transparent" />
-              <span className="absolute inset-x-0 bottom-0 flex flex-col gap-2 p-5 sm:flex-row sm:items-end sm:justify-between sm:p-7">
+              <span className="pointer-events-none absolute inset-0 z-10 bg-gradient-to-t from-pitch/95 via-pitch/25 to-transparent" />
+              <span className="absolute inset-x-0 bottom-0 z-20 flex flex-col gap-2 p-5 sm:flex-row sm:items-end sm:justify-between sm:p-7">
                 <span>
                   {image.category ? (
                     <span className="block text-[0.7rem] uppercase tracking-[0.2em] text-gold">
@@ -76,6 +81,6 @@ export function FeaturedGallery({ images }: FeaturedGalleryProps) {
           </div>
         </Reveal>
       </Container>
-    </section>
+    </AtmosphereSection>
   );
 }

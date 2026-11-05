@@ -10,7 +10,10 @@ type BlogCardProps = {
 export function BlogCard({ post }: BlogCardProps) {
   return (
     <article className="group flex h-full flex-col">
-      <Link href={`/blogs/${post.slug}`} className="relative block aspect-[16/10] overflow-hidden bg-ink">
+      <Link
+        href={`/blogs/${post.slug}`}
+        className="relative block aspect-[16/10] overflow-hidden bg-ink ring-1 ring-gold/10 transition duration-500 group-hover:ring-gold/35"
+      >
         <Image
           src={post.featuredImage.src}
           alt={post.featuredImage.alt}
@@ -26,7 +29,7 @@ export function BlogCard({ post }: BlogCardProps) {
         />
         <span className="absolute inset-0 bg-gradient-to-t from-pitch/70 via-transparent to-transparent" />
       </Link>
-      <div className="flex flex-1 flex-col border border-t-0 border-white/10 bg-charcoal/40 p-5">
+      <div className="flex flex-1 flex-col border border-t-0 border-white/10 bg-charcoal/50 p-5 backdrop-blur-[2px]">
         <div className="flex flex-wrap items-center gap-x-3 gap-y-1 text-[0.7rem] uppercase tracking-[0.18em] text-gold">
           <span>{post.category.title}</span>
           <span className="text-muted">/</span>

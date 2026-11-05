@@ -1,4 +1,5 @@
 import { BlogCard } from "@/components/blog/BlogCard";
+import { AtmosphereSection } from "@/components/motion/AtmosphereSection";
 import { ButtonLink } from "@/components/ui/ButtonLink";
 import { Reveal } from "@/components/ui/Reveal";
 import { SectionHeading } from "@/components/ui/SectionHeading";
@@ -13,9 +14,9 @@ export function LatestBlogs({ posts }: LatestBlogsProps) {
   if (posts.length === 0) return null;
 
   return (
-    <section className="border-t border-gold/15 py-20 sm:py-28">
+    <AtmosphereSection tone="default">
       <Container>
-        <Reveal>
+        <Reveal variant="blurUp">
           <div className="flex flex-col gap-6 sm:flex-row sm:items-end sm:justify-between">
             <SectionHeading
               kicker="Latest writing"
@@ -27,14 +28,14 @@ export function LatestBlogs({ posts }: LatestBlogsProps) {
             </ButtonLink>
           </div>
         </Reveal>
-        <div className="mt-12 grid gap-8 md:grid-cols-2 xl:grid-cols-3">
+        <div className="mt-14 grid gap-8 md:grid-cols-2 xl:grid-cols-3">
           {posts.map((post, index) => (
-            <Reveal key={post.id} delay={index * 0.05}>
+            <Reveal key={post.id} delay={index * 0.08} variant="scaleIn">
               <BlogCard post={post} />
             </Reveal>
           ))}
         </div>
       </Container>
-    </section>
+    </AtmosphereSection>
   );
 }

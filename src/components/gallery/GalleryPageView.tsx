@@ -35,6 +35,7 @@ export function GalleryPageView({
       kicker="The frames"
       title={title}
       summary={summary}
+      silhouette="right"
     >
       <Suspense
         fallback={
@@ -44,7 +45,10 @@ export function GalleryPageView({
             aria-label="Loading gallery"
           >
             {Array.from({ length: 6 }).map((_, index) => (
-              <div key={index} className="aspect-[4/3] bg-cream/10" />
+              <div
+                key={index}
+                className="aspect-[4/3] animate-pulse bg-cream/5 ring-1 ring-gold/10"
+              />
             ))}
           </div>
         }

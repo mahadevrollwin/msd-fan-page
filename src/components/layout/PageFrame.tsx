@@ -31,7 +31,7 @@ export function PageFrame({
         <ParallaxSilhouette
           side={silhouette}
           figure={figure}
-          strength={0.24}
+          strength={0.44}
           mirror={false}
           className="top-0 h-[70vh]"
         />

@@ -23,7 +23,7 @@ export function AtmosphereSection({
   silhouette = "none",
   figure = "stump",
   tone = "default",
-  strength = 0.26,
+  strength = 0.46,
   mirror,
 }: AtmosphereSectionProps) {
   return (

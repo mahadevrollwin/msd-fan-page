@@ -11,7 +11,7 @@ type AboutPreviewProps = {
 
 export function AboutPreview({ aboutPreview }: AboutPreviewProps) {
   return (
-    <AtmosphereSection silhouette="right" figure="smile" tone="wash" strength={0.28} mirror={false}>
+    <AtmosphereSection silhouette="right" figure="smile" tone="wash" strength={0.48} mirror={false}>
       <Container>
         <div className="grid items-center gap-12 lg:grid-cols-2 lg:gap-16">
           <Reveal variant="fadeRight">

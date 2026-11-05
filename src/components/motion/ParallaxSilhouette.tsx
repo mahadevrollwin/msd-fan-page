@@ -38,7 +38,7 @@ export function ParallaxSilhouette({
   side = "right",
   figure = "stump",
   className,
-  strength = 0.28,
+  strength = 0.48,
   mirror,
 }: ParallaxSilhouetteProps) {
   const ref = useRef<HTMLDivElement>(null);
@@ -63,7 +63,7 @@ export function ParallaxSilhouette({
     [0, 0.18, 0.82, 1],
     reduceMotion
       ? [strength, strength, strength, strength]
-      : [0.08, strength, strength, 0.1],
+      : [0.22, strength, strength, 0.24],
   );
 
   const shouldMirror =
@@ -102,12 +102,12 @@ export function ParallaxSilhouette({
           className={cn(
             "absolute inset-0",
             side === "right"
-              ? "bg-gradient-to-l from-transparent via-transparent to-pitch/90"
-              : "bg-gradient-to-r from-transparent via-transparent to-pitch/90",
+              ? "bg-gradient-to-l from-transparent via-transparent to-pitch/55"
+              : "bg-gradient-to-r from-transparent via-transparent to-pitch/55",
           )}
         />
-        <div className="absolute inset-0 bg-gradient-to-t from-pitch via-transparent to-pitch/55" />
-        <div className="absolute inset-0 bg-gold/10 mix-blend-soft-light" />
+        <div className="absolute inset-0 bg-gradient-to-t from-pitch/70 via-transparent to-pitch/30" />
+        <div className="absolute inset-0 bg-gold/12 mix-blend-soft-light" />
       </motion.div>
     </div>
   );

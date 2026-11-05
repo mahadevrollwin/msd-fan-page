@@ -1,7 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
 import { AtmosphereSection } from "@/components/motion/AtmosphereSection";
-import { ButtonLink } from "@/components/ui/ButtonLink";
 import { Reveal } from "@/components/ui/Reveal";
 import { SectionHeading } from "@/components/ui/SectionHeading";
 import { Container } from "@/components/ui/Container";
@@ -19,16 +18,11 @@ export function FeaturedGallery({ images }: FeaturedGalleryProps) {
     <AtmosphereSection silhouette="right" figure="walk" tone="wash" strength={0.48} mirror={false}>
       <Container>
         <Reveal variant="blurUp">
-          <div className="flex flex-col gap-6 sm:flex-row sm:items-end sm:justify-between">
-            <SectionHeading
-              kicker="Featured image"
-              title="Stills worth pausing on"
-              summary="The light before the first ball, the grass, the stands. Everything around the moment."
-            />
-            <ButtonLink href="/gallery" variant="ghost" className="shrink-0 self-start sm:self-auto">
-              Open gallery
-            </ButtonLink>
-          </div>
+          <SectionHeading
+            kicker="Featured image"
+            title="Stills worth pausing on"
+            summary="The light before the first ball, the grass, the stands. Everything around the moment."
+          />
         </Reveal>
 
         <Reveal delay={0.1} variant="scaleIn" className="mt-14">
